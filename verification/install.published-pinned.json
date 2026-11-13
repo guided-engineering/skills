@@ -1,8 +1,10 @@
 {
-  "checkedAt": "2026-11-13T19:35:51.642Z",
+  "checkedAt": "2026-11-13T20:35:39.565Z",
   "node": "v24.12.0",
   "platform": "win32",
   "source": "guided-engineering/skills#146c4b51fee8f1a6609b424fe6381c28c27c60e4",
+  "checkoutHead": "c8418f5cb5c3425d165dabd43201c3360074b43a",
+  "comparedWith": "commit 146c4b51fee8f1a6609b424fe6381c28c27c60e4",
   "results": [
     {
       "skill": "ops-author",
@@ -12,7 +14,8 @@
       "command": "npx --yes skills@1.8.1 add guided-engineering/skills#146c4b51fee8f1a6609b424fe6381c28c27c60e4 -a claude-code -s ops-author -y",
       "installedTo": ".claude/skills/ops-author",
       "files": 7,
-      "identicalToThisCheckout": true,
+      "comparedWith": "commit 146c4b51fee8f1a6609b424fe6381c28c27c60e4 of this repository",
+      "identical": true,
       "otherSkillsInstalled": [],
       "structuralProblems": [],
       "validator": {
@@ -36,7 +39,8 @@
       "command": "npx --yes skills@1.8.1 add guided-engineering/skills#146c4b51fee8f1a6609b424fe6381c28c27c60e4 -a claude-code -s ops-execute -y",
       "installedTo": ".claude/skills/ops-execute",
       "files": 6,
-      "identicalToThisCheckout": true,
+      "comparedWith": "commit 146c4b51fee8f1a6609b424fe6381c28c27c60e4 of this repository",
+      "identical": true,
       "otherSkillsInstalled": [],
       "structuralProblems": [],
       "validator": {
