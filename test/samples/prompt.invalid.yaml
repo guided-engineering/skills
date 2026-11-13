@@ -1,0 +1,17 @@
+# Test sample: INVALID ON PURPOSE. A document of the earlier contract: it names
+# a persona instead of an agent and has no objective and no verification.
+apiVersion: guided-engineering/v1
+id: sample.invalid
+title: Legacy prompt that still declares a persona
+persona: SoftwareDeveloper
+category: implementation
+difficulty: easy
+context: Used by the tests of this repository.
+steps:
+  - id: write
+    title: Write the report
+    actions:
+      - Write `report.md`.
+output:
+  - file: report.md
+version: 1

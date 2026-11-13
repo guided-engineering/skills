@@ -1,0 +1,16 @@
+{
+  "name": "guided-engineering-skills",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Portable Agent Skills for the OPS prompt contract: ops-author and ops-execute.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "node tools/check.mjs && node tools/sync-ops.mjs --check",
+    "sync": "node tools/sync-ops.mjs"
+  }
+}
