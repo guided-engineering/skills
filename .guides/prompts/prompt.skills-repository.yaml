@@ -1,0 +1,214 @@
+apiVersion: guided-engineering/v1
+id: guided-engineering.skills-repository
+version: 1
+title: Build, verify and publish the ops-author and ops-execute Skills
+agent: guided-engineer
+workspace: ./
+
+objective: |
+  This repository holds two portable Agent Skills, `ops-author` and
+  `ops-execute`, each usable when installed alone in a project that has neither
+  this repository nor the OpenPrompt-Specification repository. It documents
+  installation and native agent configuration per supported host, carries a
+  mechanically synchronized copy of the canonical OPS schemas and validator,
+  and is published as `guided-engineering/skills` with a verified installation
+  path.
+
+context: |
+  This prompt is the part of the refoundation request (sections 5 and 8 of
+  `.guides/product/refoundation-request.md` in the OpenPrompt-Specification
+  repository) that changes this repository. The coordinating prompt is
+  `guided-engineering.refoundation` in that repository.
+
+  The canonical contract is defined in OpenPrompt-Specification
+  (`.guides/ops-contract.md`, `.guides/schemas/`, `dist/ops-validate.mjs`).
+  This repository never redefines it.
+
+  Order matters. No Skill content is written before the baseline of the local
+  study is committed in OpenPrompt-Specification. The first Skill candidate is
+  committed before any assisted study run, and a refinement, if one is
+  justified, is a second commit.
+
+dependencies:
+  - The sibling checkout `../OpenPrompt-Specification` on its refoundation branch, with the contract frozen.
+  - The baseline evidence of the local study is committed in that repository.
+  - Node.js 22.20 or newer for the `skills` CLI, and the GitHub CLI authenticated as a member who may create repositories in the organization.
+
+constraints:
+  - Do not write any Skill content before the baseline evidence of the study is committed.
+  - Do not redefine the contract here. Schemas and validator are copied from OpenPrompt-Specification by script, with source revision and hashes recorded.
+  - Keep provider-specific configuration out of the portable core of a Skill.
+  - Build no OPS execution engine, no runtime and no orchestration layer.
+  - Complete and verify the repository locally before creating its remote. Never force-push or rewrite history.
+  - Claim no listing, certification or benchmark approval on skills.sh.
+
+requirements:
+  # ---- section 5, ops-author
+  - id: A1
+    text: '`ops-author` drafts, converts, reviews and improves OPS prompts. It inspects the target project and canonical schema, extracts intent and constraints, resolves the agent reference, exposes consequential ambiguity, writes concrete imperative actions, declares expected outputs and meaningful checks, and validates the result (5 ops-author).'
+  - id: A2
+    text: '`ops-author` preserves the scope the user gave, distinguishes supplied requirements from proposed assumptions, and shows a short semantic change summary when it improves an existing prompt (5 ops-author).'
+  - id: A3
+    text: '`ops-author` supports explicit conversion of legacy prompts as input, writes only the canonical `agent` contract, reports unsupported or conflicting old fields, never relabels an unknown actor silently, and never performs a task because a generated prompt contains executable actions (5 ops-author).'
+  # ---- section 5, ops-execute
+  - id: E1
+    text: '`ops-execute` follows the loop inspect, validate intent and contract, plan, execute the authorized unit, verify, diagnose and repair if justified, reverify, record evidence, decide the next unit (5 ops-execute).'
+  - id: E2
+    text: '`ops-execute` honors interpret-only, plan-only and execution requests without silently crossing those boundaries (5 ops-execute).'
+  - id: E3
+    text: '`ops-execute` resolves the repository, task workspace, inputs, agent profile, dependencies, ordered actions, expected outputs and acceptance checks before any modification (5 ops-execute).'
+  - id: E4
+    text: '`ops-execute` derives a short plan with a check for each task and reuses project commands, never inventing scripts or claiming that nonexistent commands were run (5 ops-execute).'
+  - id: E5
+    text: '`ops-execute` executes the smallest authorized change, preserves unrelated edits, and stops on unsupported contract semantics or material ambiguity (5 ops-execute).'
+  - id: E6
+    text: '`ops-execute` classifies a failed check before fixing it and repairs the actual cause, never weakening tests, skipping failing checks or amending requirements to get a pass (5 ops-execute).'
+  - id: E7
+    text: '`ops-execute` re-runs the relevant checks after the last content change and never reuses a pre-edit success as evidence for the final bytes (5 ops-execute).'
+  - id: E8
+    text: '`ops-execute` resumes from evidence checked against the real workspace, neither repeating a completed side effect because a checklist is stale nor skipping a step only because a log says it passed (5 ops-execute).'
+  - id: E9
+    text: '`ops-execute` respects declared retry and time limits and, when blocked, reports the failed command, an error summary, the likely cause, the attempted correction and the next action (5 ops-execute).'
+  - id: E10
+    text: '`ops-execute` separates execution evidence, review and approval, states which agent and client actually acted, and never fabricates independent reviewers or sign-offs (5 ops-execute).'
+  # ---- section 5, packaging and installation
+  - id: P1
+    text: The repository uses the discoverable layout `skills/ops-author/SKILL.md` and `skills/ops-execute/SKILL.md`, and each Skill is usable when installed independently (5 Packaging 1).
+  - id: P2
+    text: Each Skill follows the Agent Skills specification, with the required `name` and `description`, a compliant directory name and Markdown instructions after the front matter. The description states real activation contexts and boundaries, and optional fields are used only for a concrete need (5 Packaging 2).
+  - id: P3
+    text: Each `SKILL.md` is concise, substantially under the recommended 500 lines, with detailed rules, examples and host-specific instructions in clearly linked resources loaded when needed (5 Packaging 3).
+  - id: P4
+    text: The Skills start from instructions and existing tools. A deterministic script is added only for repeated or fragile work demonstrated by the baseline, is tested on valid and invalid inputs, and is not an OPS execution engine (5 Packaging 4).
+  - id: P5
+    text: A Skill uses the project's canonical contract when present. For standalone use it bundles only the necessary reference material with source revision and hash, synchronized mechanically, without forking the normative specification (5 Packaging 5).
+  - id: P6
+    text: Every required reference remains valid after selective installation, with no dependency on a sibling Skill or on absolute paths from the development machine (5 Packaging 6).
+  - id: P7
+    text: The real local discovery paths are verified against the installed client version, and study installations are isolated so that baseline runs cannot load candidate Skills (5 Packaging 7).
+  - id: P8
+    text: Codex `agents/openai.yaml` or other host-specific configuration is added only where supported and useful, provider extensions stay out of the portable core, and any native agent mapping is documented without claiming identical behavior across tools (5 Packaging 8).
+  - id: P9
+    text: The native profile or current-executor mapping frozen with the contract is reused unchanged across scored conditions. Only Skill availability changes, no Skill procedure is preloaded into the baseline and no task instruction is altered to compensate (5 Packaging 9).
+  - id: P10
+    text: Skill installation and native agent configuration are documented as separate steps, each Skill is verified in a clean project without the source checkout or a previously installed profile, and the exact supported profile step or an explicit mapping to the current executor is given (5 Packaging 10).
+  - id: P11
+    text: Front matter, naming, relative resources, scripts, example OPS artifacts and local discovery are validated, the reference validator is used when available with its version recorded, and the first Skill candidate is preserved before assisted cases run (5 Verification).
+  # ---- section 8, repository and publication
+  - id: G1
+    text: The repository is complete locally before its remote exists, with the two Skills, minimal native integration examples, installation and usage documentation, validation and evaluation assets, supported-client status and licensing based on verified project permissions (8.1).
+  - id: G2
+    text: The availability of `guided-engineering/skills` and the right to create it are verified. A suitable existing repository is used without overwriting unrelated work, and only a real naming conflict or access problem is escalated (8.2).
+  - id: G3
+    text: Local discovery is verified with the documented `skills` CLI, recording the exact version and command, selective installation into an isolated project is tested, installed paths and resources are validated, and installation examples are pinned to a real revision where supported (8.3).
+  - id: G4
+    text: The documentation states that skills.sh provides discovery and distribution around Agent Skills and claims no listing, certification or benchmark approval that was not verified separately (8.4).
+  - id: G5
+    text: Coherent commits and reviewable branches are prepared for both repositories under the existing protections and contribution rules, with no force-push, repository deletion, history rewrite or automatic merge (8.5).
+  - id: G6
+    text: The new repository is published and the reviewed OPS changes are proposed through the authorized workflow, reusing the explicit session authorization. A merge or public-setting decision that is not approved is presented as the final decision with diff, test results, target, visibility and consequences (8.6).
+  - id: G7
+    text: If remote access is unavailable, the complete local repositories and exact publication steps are kept and the state is reported as READY_LOCALLY or as the specific blocker, never as PUBLISHED (8.7).
+  - id: G8
+    text: The actual remote identity, branches, commits, visibility, public file access and documented installation from the resulting source are checked, real URLs are recorded, and an open pull request, a merged change, a public repository and a publicly installable package are told apart (8 Verification).
+
+steps:
+  - id: prepare
+    title: Prepare the repository without Skill content
+    requirements: [G1, P5]
+    actions:
+      - Confirm that the baseline evidence of the study is committed in OpenPrompt-Specification and record that commit.
+      - Add the script that copies the canonical schemas, contract reference and validator bundle from OpenPrompt-Specification and records source revision and hashes, and the script that checks the copies.
+      - Add the structural checks for front matter, naming, relative links and line counts.
+
+  - id: author-skills
+    title: Write the first candidate of both Skills
+    requirements: [A1, A2, A3, E1, E2, E3, E4, E5, E6, E7, E8, E9, E10, P1, P2, P3, P4, P5, P6]
+    actions:
+      - Write `skills/ops-author/SKILL.md` and its references from the contract and the gaps observed in the baseline.
+      - Write `skills/ops-execute/SKILL.md` and its references from the contract and the gaps observed in the baseline.
+      - Synchronize the bundled reference material into each Skill and run the copy check.
+      - Add a script to a Skill only for work the baseline showed to be repeated or fragile, and test it on valid and invalid inputs.
+      - Run the structural checks and the reference validator, and record the validator version.
+      - Commit the first candidate before any assisted study run and record its commit and directory hashes.
+
+  - id: integrate-hosts
+    title: Document installation and native agent configuration
+    requirements: [P7, P8, P9, P10, P11, G3, G4]
+    actions:
+      - Verify the discovery path of the installed client by installing each Skill alone into a clean project and reading the client's own listing.
+      - Document Skill installation and native agent configuration as separate steps for each supported host, with what was tested and what was not.
+      - Add a thin native profile example only where the host supports it, without preloading Skill procedures into any baseline.
+      - Install from the local repository with the `skills` CLI into an isolated project and validate the installed files against the source.
+      - State what skills.sh is and claim no listing.
+
+  - id: refine-once
+    title: Apply at most one refinement justified by the study
+    requirements: [P11]
+    actions:
+      - Only when the study report names a consequential observed failure that a Skill change addresses, make one coherent change and commit it as the refined candidate.
+      - Keep the first candidate reachable by its commit and record both identities.
+      - Run the structural checks again.
+
+  - id: publish
+    title: Publish the repository
+    requirements: [G1, G2, G5, G6, G7, G8]
+    actions:
+      - Run every local check on the final candidate and confirm the working tree is clean.
+      - Verify that `guided-engineering/skills` is still available and that the account may create it.
+      - Create the remote repository and push the reviewed history without force.
+      - Install both Skills from the published source into a clean project with the documented command and validate the result.
+      - Record the real repository URL, visibility, default branch, commit and the installation command that was verified.
+
+output:
+  - file: skills/ops-author/SKILL.md
+    rules:
+      - Front matter has `name` equal to `ops-author` and a `description` of at most 1024 characters that says what the Skill does and when to use it.
+      - Substantially under 500 lines.
+  - file: skills/ops-execute/SKILL.md
+    rules:
+      - Front matter has `name` equal to `ops-execute` and a `description` of at most 1024 characters that says what the Skill does and when to use it.
+      - Substantially under 500 lines.
+  - file: README.md
+    rules:
+      - Documents installation per host, native agent configuration as a separate step, what was tested, and what was not.
+  - file: LICENSE
+
+verification:
+  - id: structure
+    expect: Both Skills pass the structural checks for front matter, naming, relative resources and size, and every bundled copy matches its recorded source hash.
+    run: npm test
+    requirements: [P1, P2, P3, P5, P6, P11, G1]
+  - id: content-covers-contract
+    expect: Reading the two Skills shows every behavior listed in requirements A1 to A3 and E1 to E10, each traceable to a section of the Skill or its references.
+    requirements: [A1, A2, A3, E1, E2, E3, E4, E5, E6, E7, E8, E9, E10]
+  - id: scripts-tested
+    expect: Every bundled script is exercised on valid and invalid inputs by the tests, and no script executes OPS steps.
+    run: npm test
+    requirements: [P4]
+  - id: clean-install
+    expect: Each Skill, installed alone into a clean project with the `skills` CLI, is listed by the client, and its validator and references work there without this checkout. The CLI version and command are recorded.
+    requirements: [P6, P7, P10, G3]
+  - id: host-notes-honest
+    expect: The README separates Skill installation from native agent configuration, names each host as tested or untested, keeps provider extensions out of the portable core, describes the current-executor mapping, and makes no skills.sh listing claim.
+    requirements: [P8, P9, P10, G4]
+  - id: candidates-preserved
+    expect: The first candidate and, if any, the refined candidate are separate commits whose identities are recorded in the study.
+    requirements: [P11, G5]
+  - id: published
+    expect: The remote repository exists with the reviewed history, its visibility and default branch are as intended, a raw file is publicly readable, and the documented installation command works from the published source. Otherwise the state is reported as READY_LOCALLY with the exact blocker.
+    requirements: [G2, G5, G6, G7, G8]
+
+stopConditions:
+  - The baseline evidence of the study is not committed yet.
+  - '`guided-engineering/skills` already exists with unrelated content, or the account cannot create it.'
+  - A public-setting decision is needed that the human has not approved.
+  - Remote access is unavailable. Keep the local repository and the exact publication steps.
+
+limits:
+  repairAttempts: 2
+
+tags:
+  - refoundation
+  - skills
+createdBy: guided-engineer, translating the request kept in OpenPrompt-Specification/.guides/product/refoundation-request.md
