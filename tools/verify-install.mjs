@@ -4,13 +4,18 @@
 // valid and an invalid prompt. With --client, also start the installed client
 // once per project and read which Skills it lists.
 //
-//   node tools/verify-install.mjs [--source <path | owner/repo[#ref]>] [--client] [--out <file.json>]
+//   node tools/verify-install.mjs [--source <path | owner/repo[#ref]>] [--compare <commit>] [--client] [--out <file.json>]
 //
-// --source defaults to this checkout. The clean projects are created in the
+// --source defaults to this checkout. --compare names a commit of this
+// repository whose Skill files the installed files must equal; without it they
+// are compared with the working tree. Use it to check that an earlier revision,
+// such as the one a study measured, still installs byte for byte:
+//   node tools/verify-install.mjs --source owner/repo#<commit> --compare <commit>
+// The clean projects are created in the
 // system temporary directory, outside every repository, and removed afterwards.
 // The --client step starts one short session per Skill ("Reply with the single
 // word OK."). It reads the client's own listing; it does not exercise a Skill.
-import { spawnSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -26,6 +31,7 @@ const arg = (name) => {
   return i === -1 ? null : process.argv[i + 1];
 };
 const source = arg('source') ?? root;
+const compare = arg('compare');
 const withClient = process.argv.includes('--client');
 const outFile = arg('out');
 const sha256 = (data) => createHash('sha256').update(data).digest('hex');
@@ -34,6 +40,18 @@ const cleanEnv = () => Object.fromEntries(Object.entries(process.env).filter(([k
 const quote = (a) => (/[\s"]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a);
 const sh = (cmd, args, cwd, env) => spawnSync([cmd, ...args].map(quote).join(' '), { cwd, env, shell: true, encoding: 'utf8', timeout: 300000 });
 const node = (args, cwd) => spawnSync(process.execPath, args, { cwd, encoding: 'utf8' });
+
+/** { relative path: sha256 } of a Skill's files, in the working tree or at the commit given with --compare. */
+function expectedFiles(skill) {
+  if (!compare) {
+    const dir = join(root, 'skills', skill);
+    return Object.fromEntries(listFiles(dir).map((f) => [f, sha256(readFileSync(join(dir, f)))]));
+  }
+  const prefix = `skills/${skill}/`;
+  const names = execFileSync('git', ['ls-tree', '-r', '--name-only', compare, prefix], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean);
+  if (names.length === 0) throw new Error(`${prefix} does not exist at ${compare}`);
+  return Object.fromEntries(names.map((n) => [n.slice(prefix.length), sha256(execFileSync('git', ['show', `${compare}:${n}`], { cwd: root }))]));
+}
 
 const results = [];
 for (const skill of SKILLS) {
@@ -56,13 +74,14 @@ for (const skill of SKILLS) {
     if (!existsSync(join(installed, 'SKILL.md'))) {
       r.problems.push(`${r.installedTo}/SKILL.md does not exist after installation`);
     } else {
-      const here = listFiles(join(root, 'skills', skill));
+      const expected = expectedFiles(skill);
       const there = listFiles(installed);
       r.files = there.length;
-      const differing = [...new Set([...here, ...there])].filter((f) => !here.includes(f) || !there.includes(f)
-        || sha256(readFileSync(join(root, 'skills', skill, f))) !== sha256(readFileSync(join(installed, f))));
-      r.identicalToThisCheckout = differing.length === 0;
-      if (differing.length) r.problems.push(`installed files differ from skills/${skill} in this checkout: ${differing.join(', ')}`);
+      const differing = [...new Set([...Object.keys(expected), ...there])].filter((f) => !(f in expected) || !there.includes(f)
+        || expected[f] !== sha256(readFileSync(join(installed, f))));
+      r.comparedWith = compare ? `commit ${compare} of this repository` : 'the working tree of this checkout';
+      r.identical = differing.length === 0;
+      if (differing.length) r.problems.push(`installed files differ from skills/${skill} in ${r.comparedWith}: ${differing.join(', ')}`);
       const others = readdirSync(join(project, '.claude', 'skills')).filter((n) => n !== skill);
       r.otherSkillsInstalled = others;
       if (others.length) r.problems.push(`other Skills were installed: ${others.join(', ')}`);
@@ -120,7 +139,8 @@ for (const skill of SKILLS) {
   console.log(`${skill}: ${r.ok ? 'ok' : 'FAILED'}${r.client ? ` (client ${r.client.version} lists: ${[].concat(r.client.skillsListed).join(', ')})` : ''}${r.ok ? '' : `\n  ${r.problems.join('\n  ')}`}`);
 }
 
-const report = { checkedAt: new Date().toISOString(), node: process.version, platform: process.platform, source: source === root ? 'local checkout' : source, results };
+const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+const report = { checkedAt: new Date().toISOString(), node: process.version, platform: process.platform, source: source === root ? 'local checkout' : source, checkoutHead: head, comparedWith: compare ? `commit ${compare}` : `the working tree at ${head}`, results };
 if (outFile) {
   mkdirSync(dirname(resolve(outFile)), { recursive: true });
   writeFileSync(resolve(outFile), `${JSON.stringify(report, null, 2)}\n`);

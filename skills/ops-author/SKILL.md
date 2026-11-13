@@ -64,7 +64,7 @@ when a field, a resolution rule or a validator message is not explained here.
 | `requirements` | One `id` and `text` for each requirement the request states. | Each one needs a check that references it. Your own ideas do not go here. |
 | `steps` | Ordered. Each item of `actions` is one imperative sentence that names the file or command. | No `if`, `retries` or nested steps. Write a condition into the sentence: "Only when …". |
 | `output` | Each file the task creates or changes, relative to the workspace, listed once. | `output: []` when the result is only a state that the checks observe. |
-| `verification` | The checks that decide completion. Prefer `run` with a command the project already has; exit code 0 passes. | Without a command, `expect` says what to observe. |
+| `verification` | The checks that decide completion. Every check has an `id` and an `expect`, the condition that must hold. Add `run` when a command the project already has decides it; exit code 0 passes. | `expect` is required even when the check has `run`; the validator rejects a check without it. |
 | `stopConditions` | Situations in which going on would be a guess or would leave the scope. | |
 | `limits` | Only when the request sets a retry or time limit. | The default is two repair attempts for a failing check. |
 

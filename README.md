@@ -36,7 +36,8 @@ npx skills add guided-engineering/skills#146c4b51fee8f1a6609b424fe6381c28c27c60e
 ```
 
 The first installs one Skill. The second installs a fixed revision; the commit
-shown is the one the local study measured. Add `-g` to install for your user
+shown is the one the local study measured, which differs from the current one
+by a single corrected sentence (see below). Add `-g` to install for your user
 instead of the project. Without the installer, copy a folder under `skills/`
 into `.claude/skills/`.
 
@@ -89,9 +90,9 @@ was exercised.
 | What | Status | Evidence |
 |---|---|---|
 | Format: front matter, names, relative resources, size | Checked by `npm test` (25 tests) and by the reference validator `skills-ref` 0.1.0, which accepts both Skills. Structural validity is not proof of behavior. | [`test/`](./test/), [`tools/check.mjs`](./tools/check.mjs) |
-| Each Skill installed alone with `skills@1.8.1` into a clean project | Files identical to the source, nothing else installed, every named resource present, bundled validator works on a valid and an invalid prompt | [`verification/`](./verification/) |
+| Each Skill installed alone with `skills@1.8.1` into a clean project | Files identical to the source, nothing else installed, every named resource present, bundled validator works on a valid and an invalid prompt. Checked for the current version and, separately, for the measured revision against its own commit. | [`verification/`](./verification/) |
 | Discovery by Claude Code 2.1.322 on Windows | The client lists each Skill when it is installed alone, and both when both are installed | [`verification/`](./verification/), study records |
-| Behavior in Claude Code | Measured in a small local study: five tasks, with and without the Skills | below |
+| Behavior in Claude Code | Measured in a small local study, five tasks with and without the Skills, **for revision `146c4b5`**. The current `ops-author` differs from it by one sentence and has not been measured. | below |
 | Codex and other hosts | **Not tested.** No second host was installed. The Skills use only fields of the open format. | — |
 | A native agent profile | **Not exercised.** | — |
 | Listing on [skills.sh](https://skills.sh) | **None claimed.** skills.sh is a directory built around the `skills` CLI. No listing, review, certification or benchmark of these Skills is claimed. | — |
@@ -121,22 +122,31 @@ Everything, including what limits these numbers:
 [results page](https://guided-engineering.github.io/OpenPrompt-Specification/results.html)
 and
 [report](https://github.com/guided-engineering/OpenPrompt-Specification/blob/main/.guides/testing/skills-study/results/report.md).
-The measured revision is commit `146c4b5`. The folders under `skills/` have not
-changed since.
+The measured revision is commit `146c4b5`. Every number above is about that
+revision and about nothing later.
 
-### Known issues
+### Changed since the measured revision
 
-- The field guide of `ops-author` says that a check without a command uses
-  `expect` to say what to observe. That can be read as if `expect` were needed
-  only then. **`expect` is required for every check.** In both authoring runs
-  of the study the first draft left it out; the validator rejected the draft
-  and named the field, and the agent corrected it.
-- `assets/prompt.template.yaml` in `ops-author` is a copy of the specification
-  repository's template, and its header comment names that repository's
-  validator command. Use the command given in `SKILL.md`.
+One row of the field guide in `ops-author`, in commit `c8418f5`. `ops-execute`
+and every bundled file are byte-identical to the measured revision.
 
-They are not corrected here, because a corrected Skill is a version the study
-did not measure. Both are on the
+The measured text said that a check without a command uses `expect` to say what
+to observe. That could be read as if `expect` were needed only then, and it is
+required for every check. In both authoring runs of the study the first draft
+left it out of the checks that had a command; the validator rejected the draft
+and named the field, and the agent corrected it. The row now says that every
+check has an `id` and an `expect`, and that `run` is added when a command
+decides the check.
+
+**The effect of this correction has not been measured.** It was made after the
+study, on the owner's instruction. To use the measured text, install the pinned
+revision shown under "Install the Skills".
+
+### Known issue
+
+`assets/prompt.template.yaml` in `ops-author` is a copy of the specification
+repository's template, and its header comment names that repository's
+validator command. Use the command given in `SKILL.md`. It is on the
 [roadmap](https://github.com/guided-engineering/OpenPrompt-Specification/blob/main/ROADMAP.md).
 
 ## What a Skill folder contains
@@ -180,7 +190,11 @@ npm run sync              # copy the OPS material again from ../OpenPrompt-Speci
 
 `npm run sync` changes the bytes of the Skills. A changed Skill is a new
 version that the study did not measure, and it says so wherever the results are
-quoted.
+quoted. To check that the measured revision still installs byte for byte:
+
+```bash
+node tools/verify-install.mjs --source guided-engineering/skills#146c4b51fee8f1a6609b424fe6381c28c27c60e4 --compare 146c4b51fee8f1a6609b424fe6381c28c27c60e4
+```
 
 This repository is itself run with an OPS prompt:
 [`.guides/prompts/prompt.skills-repository.yaml`](./.guides/prompts/prompt.skills-repository.yaml),
