@@ -1,0 +1,118 @@
+{
+  "checkedAt": "2026-11-13T19:08:21.308Z",
+  "node": "v24.12.0",
+  "platform": "win32",
+  "source": "local checkout",
+  "results": [
+    {
+      "skill": "ops-author",
+      "source": "local checkout",
+      "cli": "skills@1.8.1",
+      "problems": [],
+      "command": "npx --yes skills@1.8.1 add <this checkout> -a claude-code -s ops-author -y",
+      "installedTo": ".claude/skills/ops-author",
+      "files": 7,
+      "identicalToThisCheckout": true,
+      "otherSkillsInstalled": [],
+      "structuralProblems": [],
+      "validator": {
+        "versionExit": 0,
+        "schemas": {
+          "prompt.schema.json": "3f8bb0928272ad63e303184b9fd7efe8a7ebcc88019bb20407851810855eb6d1",
+          "agents.schema.json": "8695a6b08a76b840a98eb5cfad5971daf891cf94149466e260be4280354375dc",
+          "worklog.schema.json": "a55f4484301bef135991690cffe7f68817cdcea158dcd9b7243600b5bf0967a4",
+          "adr.schema.json": "a41516a58bd58f17f4469496146a2a67dde45b871809386ebf509cdb040d3068"
+        },
+        "validSampleExit": 0,
+        "invalidSampleExit": 1
+      },
+      "client": {
+        "command": "claude -p --output-format stream-json --verbose --setting-sources project,local --strict-mcp-config --no-session-persistence",
+        "version": "2.1.322",
+        "model": "claude-opus-5-5",
+        "startedAt": "2026-11-13T19:08:11.255Z",
+        "wallMs": 4025,
+        "skillsListed": [
+          "ops-author",
+          "deep-research",
+          "design",
+          "design-sync",
+          "dataviz",
+          "update-config",
+          "verify",
+          "debug",
+          "code-review",
+          "simplify",
+          "batch",
+          "fewer-permission-prompts",
+          "doctor",
+          "loop",
+          "schedule",
+          "claude-api",
+          "workflow-authoring",
+          "run",
+          "run-skill-generator",
+          "plugin-authoring"
+        ],
+        "listsThisSkill": true,
+        "listsTheSibling": false
+      },
+      "ok": true
+    },
+    {
+      "skill": "ops-execute",
+      "source": "local checkout",
+      "cli": "skills@1.8.1",
+      "problems": [],
+      "command": "npx --yes skills@1.8.1 add <this checkout> -a claude-code -s ops-execute -y",
+      "installedTo": ".claude/skills/ops-execute",
+      "files": 6,
+      "identicalToThisCheckout": true,
+      "otherSkillsInstalled": [],
+      "structuralProblems": [],
+      "validator": {
+        "versionExit": 0,
+        "schemas": {
+          "prompt.schema.json": "3f8bb0928272ad63e303184b9fd7efe8a7ebcc88019bb20407851810855eb6d1",
+          "agents.schema.json": "8695a6b08a76b840a98eb5cfad5971daf891cf94149466e260be4280354375dc",
+          "worklog.schema.json": "a55f4484301bef135991690cffe7f68817cdcea158dcd9b7243600b5bf0967a4",
+          "adr.schema.json": "a41516a58bd58f17f4469496146a2a67dde45b871809386ebf509cdb040d3068"
+        },
+        "validSampleExit": 0,
+        "invalidSampleExit": 1
+      },
+      "client": {
+        "command": "claude -p --output-format stream-json --verbose --setting-sources project,local --strict-mcp-config --no-session-persistence",
+        "version": "2.1.322",
+        "model": "claude-opus-5-5",
+        "startedAt": "2026-11-13T19:08:17.447Z",
+        "wallMs": 3851,
+        "skillsListed": [
+          "ops-execute",
+          "deep-research",
+          "design",
+          "design-sync",
+          "dataviz",
+          "update-config",
+          "verify",
+          "debug",
+          "code-review",
+          "simplify",
+          "batch",
+          "fewer-permission-prompts",
+          "doctor",
+          "loop",
+          "schedule",
+          "claude-api",
+          "workflow-authoring",
+          "run",
+          "run-skill-generator",
+          "plugin-authoring"
+        ],
+        "listsThisSkill": true,
+        "listsTheSibling": false
+      },
+      "ok": true
+    }
+  ]
+}
