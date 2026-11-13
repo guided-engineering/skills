@@ -11,6 +11,8 @@
   "scripts": {
     "test": "node --test \"test/*.test.mjs\"",
     "check": "node tools/check.mjs && node tools/sync-ops.mjs --check",
-    "sync": "node tools/sync-ops.mjs"
+    "sync": "node tools/sync-ops.mjs",
+    "trace": "node tools/trace.mjs",
+    "verify:install": "node tools/verify-install.mjs"
   }
 }
