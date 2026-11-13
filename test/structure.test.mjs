@@ -110,6 +110,51 @@ for (const skill of SKILLS) {
   });
 }
 
+// ------------------------------------------------------------------ bundled example artifacts
+function scratchProject() {
+  const project = mkdtempSync(join(tmpdir(), 'ge-project-'));
+  mkdirSync(join(project, '.guides', 'prompts'), { recursive: true });
+  mkdirSync(join(project, '.guides', 'operation', 'worklog'), { recursive: true });
+  return project;
+}
+
+test('ops-author: the bundled prompt template is a valid prompt once its declared input exists', () => {
+  const project = scratchProject();
+  try {
+    const skill = join(root, 'skills', 'ops-author');
+    mkdirSync(join(project, 'templates'));
+    cpSync(join(skill, 'assets', 'prompt.template.yaml'), join(project, '.guides', 'prompts', 'prompt.example.starter-prompt.yaml'));
+    const out = node([join(skill, 'scripts', 'ops-validate.mjs'), '.guides/prompts/prompt.example.starter-prompt.yaml'], project);
+    assert.equal(out.status, 0, out.stdout + out.stderr);
+    assert.match(out.stdout, /valid \(prompt\)/);
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
+test('ops-execute: the bundled worklog entry template is a valid entry, and a plan that claims execution is rejected', () => {
+  const project = scratchProject();
+  try {
+    const skill = join(root, 'skills', 'ops-execute');
+    const validator = join(skill, 'scripts', 'ops-validate.mjs');
+    const template = readFileSync(join(skill, 'assets', 'worklog-entry.template.md'), 'utf8');
+    writeFileSync(join(project, '.guides', 'operation', 'worklog', '2026-01-31.example-entry.md'), template);
+    const ok = node([validator, '.guides/operation/worklog/2026-01-31.example-entry.md'], project);
+    assert.equal(ok.status, 0, ok.stdout + ok.stderr);
+    assert.match(ok.stdout, /valid \(worklog\)/);
+
+    // The same entry relabelled as a plan still reports a step as done: that is a claim of execution.
+    assert.match(template, /^mode: execute$/m);
+    writeFileSync(join(project, '.guides', 'operation', 'worklog', '2026-01-31.example-plan.md'),
+      template.replace(/^mode: execute$/m, 'mode: plan').replace('entryId: 2026-01-31.example-entry', 'entryId: 2026-01-31.example-plan'));
+    const bad = node([validator, '.guides/operation/worklog/2026-01-31.example-plan.md'], project);
+    assert.equal(bad.status, 1, bad.stdout + bad.stderr);
+    assert.match(bad.stdout, /plan-claims-execution/);
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
 test('the two Skills carry the same validator', () => {
   const [a, b] = SKILLS.map((s) => readFileSync(join(root, 'skills', s, 'scripts', 'ops-validate.mjs'), 'utf8'));
   assert.equal(a, b);

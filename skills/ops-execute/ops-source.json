@@ -1,0 +1,31 @@
+{
+  "description": "Provenance of the OPS material bundled in this Skill. Written by tools/sync-ops.mjs; do not edit.",
+  "repository": "https://github.com/guided-engineering/OpenPrompt-Specification",
+  "commit": "afbe49198a6635f5d878028689a1f7db4409ff77",
+  "files": {
+    "scripts/ops-validate.mjs": {
+      "source": "dist/ops-validate.mjs",
+      "sourceSha256": "b3585074396d651fe183ec59d15153df4f7f2f193be09cfbc8546dee6d52fd4a",
+      "sha256": "b3585074396d651fe183ec59d15153df4f7f2f193be09cfbc8546dee6d52fd4a",
+      "transformed": null
+    },
+    "scripts/ops-validate.licenses.txt": {
+      "source": "dist/ops-validate.licenses.txt",
+      "sourceSha256": "6e7dd63cfde023a30fc14d5317cb3960752b73014e1e3c0008827b107c6d0549",
+      "sha256": "6e7dd63cfde023a30fc14d5317cb3960752b73014e1e3c0008827b107c6d0549",
+      "transformed": null
+    },
+    "references/ops-contract.md": {
+      "source": ".guides/ops-contract.md",
+      "sourceSha256": "85efe11edcdd2531925a14f6d21bf31747c54ef119f2a0e31c97931aaf678603",
+      "sha256": "480cfa73ce436bbc45e98bbd4303139db10339e7d551a250d5d2184d23ba3a5c",
+      "transformed": "relative links rewritten to the recorded commit"
+    },
+    "assets/worklog-entry.template.md": {
+      "source": "templates/template.worklog.md",
+      "sourceSha256": "1bc9b9de96b1c09ba06e65b1de0541d86900983c4cd856ac4a9e27507a066d8a",
+      "sha256": "1bc9b9de96b1c09ba06e65b1de0541d86900983c4cd856ac4a9e27507a066d8a",
+      "transformed": null
+    }
+  }
+}
